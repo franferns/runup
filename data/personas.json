@@ -1,0 +1,22 @@
+[
+  {
+    "id": "after-endgame",
+    "label": "I stopped after Endgame",
+    "treatAsWatched": [
+      "cap-first-avenger",
+      "the-avengers-2012",
+      "infinity-war",
+      "endgame"
+    ]
+  },
+  {
+    "id": "x-men-lane",
+    "label": "I mostly know X-Men",
+    "treatAsWatched": ["x-men-2000", "x2-2003"]
+  },
+  {
+    "id": "official-15",
+    "label": "Disney+ Official 15",
+    "treatAsWatched": []
+  }
+]
