@@ -25,9 +25,14 @@ Then open that repo in Cursor if you want an agent to keep building.
 ## Run locally
 
 ```bash
+git clone https://github.com/franferns/runup.git
+cd runup
+git checkout cursor/include-mock-screens-9b39
 npm install
 npm run dev
 ```
+
+Build order (slices, files, done-when): **[IMPLEMENTATION.md](IMPLEMENTATION.md)**.
 
 ## What’s here
 
@@ -35,10 +40,6 @@ npm run dev
 - Design mockups on the home page (`public/mocks/`)
 - [`data/official-15.json`](data/official-15.json) — Disney+ homework list as reported in press, with spoiler-safe blurbs
 
-## Next implementation slice
+## Next
 
-1. Placement: four pins (Endgame-stoppers, X-Men lane, Official 15, 8 hours)
-2. Remaining path from “stopped after Endgame”
-3. Tonight card (Already seen / Watch / Skip)
-4. Line-draw on mark-watched
-5. `prefers-reduced-motion` + list fallback
+Follow [IMPLEMENTATION.md](IMPLEMENTATION.md). Do not start with Three.js or a 166-title catalog.
