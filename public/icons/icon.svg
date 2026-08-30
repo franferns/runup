@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" fill="#0b0c10"/>
+  <circle cx="430" cy="118" r="150" fill="url(#horizon)"/>
+  <path
+    d="M72 360 Q 180 300 260 320 T 420 250"
+    stroke="#e8a54b"
+    stroke-width="14"
+    stroke-linecap="round"
+    opacity="0.9"
+  />
+  <circle cx="72" cy="360" r="18" fill="#e8a54b" stroke="#f8e2b8" stroke-width="4"/>
+  <circle cx="260" cy="320" r="12" fill="#e8a54b" opacity="0.75"/>
+  <circle cx="420" cy="250" r="12" fill="#e8a54b" opacity="0.55"/>
+  <defs>
+    <radialGradient id="horizon" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c9d4e8" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#c9d4e8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#c9d4e8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
