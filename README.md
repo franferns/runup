@@ -32,6 +32,7 @@ npm run dev
 ## What’s here
 
 - Void landing screen (static stand-in for the Threadfield)
+- Design mockups on the home page (`public/mocks/`)
 - [`data/official-15.json`](data/official-15.json) — Disney+ homework list as reported in press, with spoiler-safe blurbs
 
 ## Next implementation slice
