@@ -1,0 +1,108 @@
+:root {
+  --void: #0b0c10;
+  --text: #f4f1ea;
+  --muted: #8a8d96;
+  --amber: #e8a54b;
+  --violet: #9b7dff;
+  --rust: #c45c3e;
+  --teal: #3ec4c1;
+  --horizon: #c9d4e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--void);
+  color: var(--text);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-image: radial-gradient(ellipse at 100% 50%, rgba(201, 212, 232, 0.12), transparent 42%);
+}
+
+.shell {
+  min-height: 100dvh;
+  padding: 28px 32px 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  letter-spacing: 0.42em;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.disclaimer {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.hero {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 48px 12px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 500;
+  letter-spacing: 0.38em;
+}
+
+.hero p {
+  margin: 18px 0 0;
+  color: var(--muted);
+}
+
+.clusters {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cluster {
+  flex: 1;
+  height: 88px;
+  border-radius: 999px;
+  opacity: 0.45;
+  filter: blur(0.2px);
+}
+
+.cluster.amber {
+  background: radial-gradient(circle, var(--amber), transparent 70%);
+}
+
+.cluster.violet {
+  background: radial-gradient(circle, var(--violet), transparent 70%);
+}
+
+.cluster.rust {
+  background: radial-gradient(circle, var(--rust), transparent 70%);
+}
+
+.cluster.teal {
+  background: radial-gradient(circle, var(--teal), transparent 70%);
+}
+
+.data-note {
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}

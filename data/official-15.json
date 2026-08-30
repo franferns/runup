@@ -1,0 +1,173 @@
+{
+  "track": "official-15",
+  "source": "Disney+ homework list as reported by press (IGN / ScreenRant), Aug 2026",
+  "horizon": "2026-12-18",
+  "disclaimer": "Unofficial fan project. Not affiliated with Marvel Entertainment or The Walt Disney Company.",
+  "titles": [
+    {
+      "id": "x-men-2000",
+      "title": "X-Men",
+      "year": 2000,
+      "runtimeMin": 104,
+      "thread": "legacy",
+      "order": 1,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Introduces a team later stories assume you know."
+    },
+    {
+      "id": "x2-2003",
+      "title": "X2: X-Men United",
+      "year": 2003,
+      "runtimeMin": 133,
+      "thread": "legacy",
+      "order": 2,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Continues that team before the later crossover."
+    },
+    {
+      "id": "cap-first-avenger",
+      "title": "Captain America: The First Avenger",
+      "year": 2011,
+      "runtimeMin": 124,
+      "thread": "core",
+      "order": 3,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": true,
+      "spoilerSafeWhy": "Origin of a lead the later ensemble builds on."
+    },
+    {
+      "id": "the-avengers-2012",
+      "title": "The Avengers",
+      "year": 2012,
+      "runtimeMin": 143,
+      "thread": "core",
+      "order": 4,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": true,
+      "spoilerSafeWhy": "The first full team-up this saga keeps echoing."
+    },
+    {
+      "id": "infinity-war",
+      "title": "Avengers: Infinity War",
+      "year": 2018,
+      "runtimeMin": 149,
+      "thread": "core",
+      "order": 5,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": true,
+      "spoilerSafeWhy": "Sets the conflict the next film resolves."
+    },
+    {
+      "id": "endgame",
+      "title": "Avengers: Endgame",
+      "year": 2019,
+      "runtimeMin": 181,
+      "thread": "core",
+      "order": 6,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": true,
+      "spoilerSafeWhy": "The last film many people stopped on."
+    },
+    {
+      "id": "loki-s1",
+      "title": "Loki",
+      "year": 2021,
+      "runtimeMin": 270,
+      "thread": "multiverse",
+      "order": 7,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Sets a rule later films use."
+    },
+    {
+      "id": "shang-chi",
+      "title": "Shang-Chi and the Legend of the Ten Rings",
+      "year": 2021,
+      "runtimeMin": 132,
+      "thread": "core",
+      "order": 8,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Introduces a lead who shows up in the later ensemble."
+    },
+    {
+      "id": "no-way-home",
+      "title": "Spider-Man: No Way Home",
+      "year": 2021,
+      "runtimeMin": 148,
+      "thread": "multiverse",
+      "order": 9,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Shows how separate film lanes can collide."
+    },
+    {
+      "id": "multiverse-of-madness",
+      "title": "Doctor Strange in the Multiverse of Madness",
+      "year": 2022,
+      "runtimeMin": 126,
+      "thread": "multiverse",
+      "order": 10,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Names a danger the later event leans on."
+    },
+    {
+      "id": "wakanda-forever",
+      "title": "Black Panther: Wakanda Forever",
+      "year": 2022,
+      "runtimeMin": 161,
+      "thread": "core",
+      "order": 11,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Introduces a ruler later stories assume you recognize."
+    },
+    {
+      "id": "deadpool-wolverine",
+      "title": "Deadpool & Wolverine",
+      "year": 2024,
+      "runtimeMin": 128,
+      "thread": "legacy",
+      "order": 12,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Connects legacy characters to the current saga."
+    },
+    {
+      "id": "brave-new-world",
+      "title": "Captain America: Brave New World",
+      "year": 2025,
+      "runtimeMin": 118,
+      "thread": "core",
+      "order": 13,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "The current Captain America before the event film."
+    },
+    {
+      "id": "thunderbolts",
+      "title": "Thunderbolts*",
+      "year": 2025,
+      "runtimeMin": 127,
+      "thread": "core",
+      "order": 14,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "A new team the later story treats as given."
+    },
+    {
+      "id": "fantastic-four-first-steps",
+      "title": "The Fantastic Four: First Steps",
+      "year": 2025,
+      "runtimeMin": 115,
+      "thread": "legacy",
+      "order": 15,
+      "onOfficial15": true,
+      "typicallyBeforeEndgame": false,
+      "spoilerSafeWhy": "Introduces a family the event film brings in."
+    }
+  ]
+}
