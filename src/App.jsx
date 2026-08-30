@@ -1,88 +1,81 @@
-import catalog from "../data/official-15.json";
-
-const MOCKS = [
-  {
-    src: "/mocks/runup-01-void-landing.png",
-    title: "Void",
-    caption: "Place yourself",
-    wide: true,
-  },
-  {
-    src: "/mocks/runup-02-placement.png",
-    title: "Placement",
-    caption: "Drop a pin on a lane",
-    wide: true,
-  },
-  {
-    src: "/mocks/runup-03-threadfield.png",
-    title: "Threadfield",
-    caption: "Remaining path toward the horizon",
-    wide: true,
-  },
-  {
-    src: "/mocks/runup-04-tonight.png",
-    title: "Tonight",
-    caption: "One title, three actions",
-    wide: true,
-  },
-  {
-    src: "/mocks/runup-05-mobile.png",
-    title: "Mobile",
-    caption: "Tonight-first on a phone",
-    wide: false,
-  },
-];
+import { useCallback, useEffect, useState } from "react";
+import DesignGallery from "./DesignGallery.jsx";
+import ListView from "./ListView.jsx";
+import { prefersReducedMotion } from "./motion.js";
+import { loadState } from "./storage.js";
+import ThreadfieldView from "./ThreadfieldView.jsx";
+import { useRouter } from "./useRouter.js";
+import Void from "./Void.jsx";
 
 export default function App() {
-  const hours = Math.round(
-    catalog.titles.reduce((sum, title) => sum + title.runtimeMin, 0) / 60,
+  const { path, navigate } = useRouter();
+  const [state, setState] = useState(() => loadState());
+  const [placementMode, setPlacementMode] = useState(false);
+
+  const refreshState = useCallback(() => {
+    setState(loadState());
+  }, []);
+
+  useEffect(() => {
+    refreshState();
+  }, [path, refreshState]);
+
+  const handlePlaced = useCallback(
+    (nextState) => {
+      setState(nextState);
+      setPlacementMode(false);
+      navigate(prefersReducedMotion() ? "/list" : "/");
+    },
+    [navigate],
   );
 
+  const handleChangePlacement = useCallback(() => {
+    setPlacementMode(true);
+    navigate("/");
+  }, [navigate]);
+
+  const handleStateChange = useCallback((nextState) => {
+    setState(nextState);
+  }, []);
+
+  const handleOpenList = useCallback(() => {
+    navigate("/list");
+  }, [navigate]);
+
+  const handleOpenThreadfield = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
+
+  if (path === "/design") {
+    return <DesignGallery />;
+  }
+
+  if (path === "/list") {
+    if (!state.personaId) {
+      return <Void state={state} onPlaced={handlePlaced} />;
+    }
+
+    return (
+      <ListView
+        state={state}
+        onChangePlacement={handleChangePlacement}
+        onStateChange={handleStateChange}
+        onOpenThreadfield={handleOpenThreadfield}
+      />
+    );
+  }
+
+  if (!state.personaId || placementMode) {
+    return <Void state={state} onPlaced={handlePlaced} />;
+  }
+
   return (
-    <div className="shell">
-      <header>
-        <div className="brand">RUNUP</div>
-        <p className="disclaimer">{catalog.disclaimer}</p>
-      </header>
-      <main className="hero">
-        <div>
-          <h1>PLACE YOURSELF</h1>
-          <p>Drop a pin on where your story already is.</p>
-        </div>
-      </main>
-      <div className="clusters" aria-hidden="true">
-        <div className="cluster amber" />
-        <div className="cluster violet" />
-        <div className="cluster rust" />
-        <div className="cluster teal" />
-      </div>
-      <section className="mocks" aria-labelledby="mocks-heading">
-        <h2 id="mocks-heading">Screens</h2>
-        <p className="mocks-lead">
-          Design frames for the catch-up path. These are mockups, not live
-          product chrome.
-        </p>
-        <ul className="mock-grid">
-          {MOCKS.map((mock) => (
-            <li
-              key={mock.src}
-              className={mock.wide ? "mock-card mock-card-wide" : "mock-card mock-card-phone"}
-            >
-              <figure>
-                <img src={mock.src} alt={`${mock.title}: ${mock.caption}`} />
-                <figcaption>
-                  <strong>{mock.title}</strong>
-                  <span>{mock.caption}</span>
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <p className="data-note">
-        Official 15 loaded · {catalog.titles.length} titles · ~{hours}h · horizon{" "}
-        {catalog.horizon}
-      </p>
-    </div>
+    <ThreadfieldView
+      state={state}
+      onChangePlacement={handleChangePlacement}
+      onStateChange={handleStateChange}
+      onOpenList={handleOpenList}
+      reduceMotion={prefersReducedMotion()}
+    />
   );
 }
