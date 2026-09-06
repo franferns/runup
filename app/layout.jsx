@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import { getSiteUrl } from "../lib/siteUrl.js";
 
 export const metadata = {
   title: {
@@ -7,9 +8,7 @@ export const metadata = {
   },
   description:
     "Unofficial, spoiler-safe catch-up path for Avengers: Doomsday. Not affiliated with Marvel or Disney.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://runup.app",
-  ),
+  metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: "/icons/icon.svg",
     apple: "/icons/icon-192.png",

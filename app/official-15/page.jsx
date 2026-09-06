@@ -1,8 +1,9 @@
 import Official15Page from "../../components/Official15Page.jsx";
 import { getOrderedTitles } from "../../lib/catalog.js";
 import { getOfficial15Content } from "../../lib/official15Content.js";
+import { getSiteUrl } from "../../lib/siteUrl.js";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://runup.app";
+const siteUrl = getSiteUrl();
 const pageUrl = `${siteUrl}/official-15`;
 
 const { frontmatter } = getOfficial15Content();

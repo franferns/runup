@@ -1,6 +1,7 @@
 import LandingPage from "../components/LandingPage.jsx";
+import { getSiteUrl } from "../lib/siteUrl.js";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://runup.app";
+const siteUrl = getSiteUrl();
 
 export const metadata = {
   title: "Runup — spoiler-safe MCU catch-up for Avengers: Doomsday",

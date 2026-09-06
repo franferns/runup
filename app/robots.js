@@ -1,4 +1,6 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://runup.app";
+import { getSiteUrl } from "../lib/siteUrl.js";
+
+const siteUrl = getSiteUrl();
 
 export default function robots() {
   return {
