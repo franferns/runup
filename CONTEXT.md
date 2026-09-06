@@ -33,8 +33,20 @@ User action meaning "not tonight, and I'm not claiming I've seen it." Adds the t
 _Avoid_: Pass, defer, later
 
 **Watch tonight**:
-User action meaning "this is my pick for now." Does not dequeue or change watched/skipped state — the title stays at the head until the user later marks it Already seen (or Skips it). **Web (v0):** expands the Tonight card inline with (1) a Google search link for the title and (2) TV install guidance (QR / Play Store link to the Google TV companion app). **Google TV app (post-v0):** deep-link to the title on the user's OTT provider (e.g. Disney+).
+User action meaning "this is my pick for now." Does not dequeue or change watched/skipped state — the title stays at the head until the user later marks it Already seen (or Skips it). **Web (v0):** expands the Tonight card inline with (1) a Google search link for the title and (2) TV install and pairing guidance in the On your TV panel. **Google TV app (post-v0):** opens Tonight directly in the user's OTT provider.
 _Avoid_: Start watching, play
+
+**Pairing**:
+The handshake that links the web app to one or more Google TV devices via a short-lived code shown in the On your TV panel. Required before the TV app can show Tonight.
+_Avoid_: Auth, login, account
+
+**Paired session**:
+The shared Runup state — placement, marks, and budget — visible to the web app and every paired TV after pairing succeeds. Persists until the user unpairs or the session ends.
+_Avoid_: Account, sync account, household
+
+**Streaming**:
+Per-title catalog metadata describing how to open that title in an OTT provider from the Google TV app.
+_Avoid_: Provider link, deep link, OTT
 
 **Void**:
 The first screen — dark landing with placement pins. Lives at `/`. Replaces the current mock-only hero once Slice 1 ships.
@@ -49,7 +61,7 @@ The Screens mock reference (`runup-01` … `05`). Lives at `/design` after Slice
 _Avoid_: Mocks page, screens
 
 **Google TV app**:
-A post-v0 Android TV companion that opens Tonight's title directly in the user's OTT provider. Not in v0 scope; web v0 includes install guidance pointing to it.
+A post-v0 Android TV companion that shows Tonight only after pairing — open in provider, Already seen, Skip, or a path-complete screen when the queue is empty. Web owns placement; the TV app is a couch remote for an already-configured queue.
 _Avoid_: TV app, Android TV build
 
 **Pace warning**:

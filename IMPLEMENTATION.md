@@ -180,8 +180,38 @@ SVG or canvas in `src/Threadfield.jsx`:
 
 ### Slice 7 — Google TV companion (post-v0)
 
-- [ ] Android TV app opens Tonight's title directly in the user's OTT provider (e.g. Disney+)
-- [ ] Web install guidance already points here from Watch tonight (Slice 2)
+**Stack:** Kotlin + Jetpack Compose for TV in `android/` (monorepo). **Sync:** Supabase (pairing codes, session state, realtime). See ADR 0002.
+
+#### Catalog
+
+- [ ] Add nested `streaming` object per title in `official-15.json`: `provider`, `contentId` (optional), `searchQuery` (fallback)
+- [ ] Add `catalogVersion` (or equivalent) for TV background refresh
+- [ ] Curate canonical provider path for all 15 titles (X-Men may not be Disney+)
+
+#### Supabase
+
+- [ ] Tables: `pairing_codes` (code, session_id, expires_at), `sessions` (state JSON = `runup.v1` shape), `devices` (session_id, device_token)
+- [ ] Pairing code: 6 digits, ~10 min TTL, reusable within window (multiple TVs)
+- [ ] Bidirectional state writes; `watchedIds` / `skippedIds` merged as set-union
+- [ ] Realtime subscription on `sessions` for TV and web
+
+#### Web (extends Slice 2)
+
+- [ ] On your TV panel in Watch tonight: show pairing code + QR, device list, unpair controls
+- [ ] Wire `TV_APP_URL` in `src/watchTonight.js` when Play Store listing exists
+- [ ] Generate pairing code on demand; regenerate when expired
+
+#### Android TV app
+
+- [ ] Pairing gate on cold start (no standalone placement)
+- [ ] Tonight screen: poster, title, runtime, spoiler-safe why, Open in provider, Already seen, Skip
+- [ ] Open in provider: `contentId` → provider intent; fallback → `searchQuery` via global search
+- [ ] Path-complete screen when queue empty (mirror web empty Tonight copy + horizon)
+- [ ] Catalog: bundled in APK + background refresh from deployed `official-15.json`
+- [ ] Store `sessionId` + `deviceToken` in prefs; persistent until unpair
+- [ ] Orphan handling: clear message + re-pair if session ended on web
+
+**Done when:** user pairs from web, opens TV app, taps Open in provider for Tonight, marks Already seen on TV, and web queue updates via realtime.
 
 ### Explicitly later (do not start here)
 

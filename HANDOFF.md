@@ -1,8 +1,9 @@
 # Runup — session handoff
 
-**Date:** 30 Aug 2026  
-**Repo:** `/Users/francisfernandes/Documents/cursor/dom/runup` (clone of [franferns/runup](https://github.com/franferns/runup))  
-**Status:** Slices 1–5 implemented locally; Slice 6+ not started. **Changes are uncommitted** (see [Git state](#git-state)).
+**Date:** 2 Sep 2026  
+**Repo:** `/Users/francisfernandes/Documents/cursor/dom/runup` → [franferns/runup](https://github.com/franferns/runup)  
+**Branch:** `cursor/slice-7-google-tv` (from `main` @ `934d061`)  
+**Status:** v0 shipped on `main` (PR #2). **Slice 7 in progress — all work uncommitted** (see [Git state](#git-state)).
 
 ---
 
@@ -14,9 +15,13 @@ Unofficial, spoiler-safe catch-up guide for *Avengers: Doomsday* (horizon **18 D
 
 **Metaphor:** The **Threadfield** — an amber strand with poster thumbnails + beads toward a horizon glow. Not a checklist app.
 
+**Slice 7 add-on:** A **Google TV companion** (`android/`) pairs with the web app via **Supabase** so the couch can open Tonight in Disney+, mark Already seen, and Skip — with bidirectional sync.
+
 ---
 
 ## Quick start
+
+### Web
 
 ```bash
 cd runup
@@ -30,7 +35,32 @@ npm run dev
 | `/list` | Accessible list view + Tonight card |
 | `/design` | Mock gallery (`public/mocks/runup-01` … `05`) |
 
-**Posters:** Enabled by default via TMDB CDN (`VITE_ENABLE_POSTERS=true` in `.env.example`). Set `VITE_ENABLE_POSTERS=false` to use gradient placeholders.
+**Posters:** TMDB CDN (`VITE_ENABLE_POSTERS=true`). Set `false` for gradient placeholders.
+
+**Pairing (optional):** Create `.env` with:
+
+```
+VITE_SUPABASE_URL=https://xxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+VITE_ENABLE_POSTERS=true
+```
+
+Without Supabase env vars, pairing UI falls back to static “install the TV app” copy.
+
+### Supabase
+
+See [`supabase/README.md`](./supabase/README.md). Migrations + five edge functions live in `supabase/`. Deploy before pairing works end-to-end.
+
+### Android TV
+
+See [`android/README.md`](./android/README.md).
+
+```bash
+cd android
+# Create local.properties with SUPABASE_URL, SUPABASE_ANON_KEY, CATALOG_URL
+./gradlew assembleDebug
+./gradlew installDebug   # TV emulator or device
+```
 
 ---
 
@@ -39,13 +69,74 @@ npm run dev
 | Slice | Status | Notes |
 |-------|--------|-------|
 | 0 — sanity | ✅ | Vite + React + catalog |
-| 1 — placement | ✅ | Four pins, `localStorage`, confirm on persona change, `/design` gallery |
-| 2 — Tonight card | ✅ | Already seen / Watch tonight / Skip; inline search + TV install copy |
+| 1 — placement | ✅ | Four pins, `localStorage`, confirm on persona change |
+| 2 — Tonight card | ✅ | Already seen / Watch tonight / Skip; Google search + On your TV panel |
 | 3 — horizon chrome | ✅ | Hours in queue, days to Doomsday, **Fit to pace** |
-| 4 — Threadfield | ✅ | SVG strand, line-draw on Already seen, poster thumbs above beads |
-| 5 — list fallback | ✅ | Full ordered list, reduced-motion → `/list`, View strand link |
-| 6 — PWA + share still | ❌ | Next up |
-| 7 — Google TV app | ❌ | Post-v0 |
+| 4 — Threadfield | ✅ | SVG strand, line-draw on Already seen, poster thumbs |
+| 5 — list fallback | ✅ | Full ordered list, reduced-motion → `/list` |
+| 6 — PWA + share still | ✅ | `public/manifest.json`, icons, `src/shareStill.js` |
+| 7 — Google TV | 🚧 | In progress on this branch — see below |
+
+---
+
+## Slice 7 progress (this branch)
+
+Full plan: [`docs/plans/slice-7-google-tv.md`](./docs/plans/slice-7-google-tv.md)  
+ADR: [`docs/adr/0002-tv-companion-via-supabase-pairing.md`](./docs/adr/0002-tv-companion-via-supabase-pairing.md)
+
+### Done (local, uncommitted)
+
+| Area | What shipped |
+|------|----------------|
+| **Catalog** | `catalogVersion: 1` + per-title `streaming` (`provider`, `contentId`, `searchQuery`) in `data/official-15.json`. Copied to `public/data/` on `npm run build` via `catalog:public` script. |
+| **Supabase** | Migration `20260831000000_tv_pairing.sql`. Edge functions: `session-bootstrap`, `pairing-code`, `pair`, `state`, `devices`. Realtime on `sessions`. |
+| **Web pairing** | `src/pairing.js` — session bootstrap, code generation, device list, unpair, remote state PATCH, Realtime subscribe. `src/usePairingSync.js` — hydrate on load, debounced sync on state change. Wired in `App.jsx`. |
+| **Tonight UI** | `TonightCard.jsx` — 6-digit code, expiry countdown, QR (`pairQrUrl`), paired device list, unpair controls. Graceful fallback when Supabase not configured. |
+| **Android scaffold** | Full `android/` project — Kotlin + Compose for TV. Pairing gate, **Threadfield + placement + Tonight** (see divergence below), Disney+ launcher, 15s polling, catalog assets from repo. Debug APK builds. |
+| **Void polish** | Atmospheric backgrounds (`public/backgrounds/`), `scripts/generate-void-background.py`. |
+| **Docs** | `CONTEXT.md` updated (Pairing, Streaming, Google TV app). `README.md` Slice 7 section. |
+
+### Not done / blocked
+
+| Item | Notes |
+|------|-------|
+| **Supabase deployed** | Schema + functions exist in repo; must be linked and deployed to a live project for pairing to work. |
+| **`TV_APP_URL`** | Still `null` in `src/watchTonight.js` — set when Play Store listing exists. |
+| **`.env.example`** | Deleted in working tree — restore before commit (see env vars below). |
+| **`android/local.properties.example`** | Referenced in README but not present — create or document inline. |
+| **End-to-end verification** | Full pairing loop not confirmed on emulator + live Supabase in this session. |
+| **Play Store listing** | No published TV app yet. |
+| **Physical Google TV test** | Emulator only so far. |
+
+### Spec divergence (important)
+
+ADR 0002 and the Slice 7 plan say: **Tonight only on TV — no placement, no Threadfield.**
+
+The current Android app (`MainActivity.kt`, `RunupViewModel.kt`) implements:
+
+1. Pairing gate
+2. **Placement screen** (four pins on TV)
+3. **Threadfield screen** with Tonight actions, horizon chrome, Fit to pace
+
+Decide before merge: **strip TV back to Tonight-only** (per ADR) or **update ADR** to allow full TV experience. Web still owns placement in the pairing model; TV placement is redundant if sync works.
+
+### Known bug
+
+`src/usePairingSync.js` line 26 calls `loadState()` but does not import it from `./storage.js`. Realtime updates from TV will throw at runtime until fixed.
+
+---
+
+## TV install from web (design decision)
+
+**Same Wi‑Fi does not help.** Browsers cannot detect LAN devices or push install intents to a Google TV.
+
+**What works:**
+
+1. **Play Store URL** on phone → user installs remotely if same Google account is on TV (`TV_APP_URL` → `https://play.google.com/store/apps/details?id=com.runup.tv`)
+2. **QR encoding that URL** — scan on phone, install to TV via Play Store “Install on [device]”
+3. **Manual** — search “Runup” in Play Store on the TV
+
+Pairing remains **code-based via Supabase**, not network proximity.
 
 ---
 
@@ -53,139 +144,152 @@ npm run dev
 
 Canonical glossary: [`CONTEXT.md`](./CONTEXT.md)  
 ADR: [`docs/adr/0001-persona-vs-budget-hours.md`](./docs/adr/0001-persona-vs-budget-hours.md)  
-Build plan: [`IMPLEMENTATION.md`](./IMPLEMENTATION.md) (updated during grilling session)
+Build plan: [`IMPLEMENTATION.md`](./IMPLEMENTATION.md)
 
-### Key decisions (from grilling)
+### Key decisions
 
-1. **Three personas** + separate **`budgetHours`** — not a fourth “eight-hours” persona. Fourth pin = `official-15` + `budgetHours: 8`.
+1. **Three personas** + separate **`budgetHours`** — fourth pin = `official-15` + `budgetHours: 8`.
 2. **Queue pipeline:** Official 15 `order` → minus `persona.treatAsWatched` → minus `watchedIds` → minus `skippedIds` → head-keep by `budgetHours`.
-3. **Already seen** vs **Skip:** both leave queue; only Already seen counts as watched. Skip vanishes from strand.
-4. **Persona change** always confirms and resets `watchedIds`, `skippedIds`, `budgetHours` (unless new pin sets budget).
-5. **Fit to pace** (not “Shed to Official 15”) → `budgetHours = daysLeft × 2`.
-6. **Threadfield** shows **remaining nodes only**; line-draw then node removed. No persistent “watched” nodes on strand.
-7. **Watch tonight (web):** expand card → Google search + TV app install guidance. Google TV deep-link is Slice 7.
-8. **Posters:** TMDB `tmdbPosterPath` per title in `data/official-15.json`, behind `VITE_ENABLE_POSTERS`.
-
-### Personas (`data/personas.json`)
-
-| ID | `treatAsWatched` |
-|----|------------------|
-| `after-endgame` | Cap, Avengers, Infinity War, Endgame |
-| `x-men-lane` | `x-men-2000`, `x2-2003` only |
-| `official-15` | `[]` |
-
----
-
-## `localStorage` shape (`runup.v1`)
-
-```json
-{
-  "v": 1,
-  "personaId": "after-endgame",
-  "budgetHours": null,
-  "watchedIds": ["loki-s1"],
-  "skippedIds": []
-}
-```
-
-Clear in DevTools → Application → Local Storage to reset.
+3. **Already seen** vs **Skip:** both leave queue; only Already seen counts as watched.
+4. **Pairing:** 6-digit code (~10 min TTL), multiple TVs per session, set-union merge for `watchedIds` / `skippedIds`.
+5. **Watch tonight (web):** expand card → Google search + On your TV panel (code/QR when Supabase configured).
+6. **Posters:** TMDB `tmdbPosterPath` in `data/official-15.json`, behind `VITE_ENABLE_POSTERS`.
 
 ---
 
 ## Architecture
 
-### Routing (`src/App.jsx`)
+### Web routing (`src/App.jsx`)
 
-- Lightweight client router in `src/useRouter.js` (no react-router).
-- **`placementMode`** state: “Change placement” shows Void without clearing persona until a new pin is chosen.
-- After placement: `prefers-reduced-motion` → `/list`, else `/`.
+- Client router in `src/useRouter.js` (no react-router).
+- `placementMode` — “Change placement” shows Void without clearing persona until a new pin is chosen.
+- `usePairingSync` hydrates from Supabase on load and syncs state changes.
 
-### Core modules
+### Core web modules
 
 | File | Role |
 |------|------|
 | `src/path.js` | `remainingQueue()`, `queueHours()` |
-| `src/storage.js` | load/save, `applyPlacement`, `markAlreadySeen`, `markSkipped`, `applyFitToPace` |
-| `src/queueModel.js` | Shared `{ persona, queue, tonight, hours }` for views |
-| `src/horizon.js` | Days to horizon, pace warning math |
-| `src/posters.js` | TMDB poster URL builder |
+| `src/storage.js` | load/save `runup.v1`, mark actions, placement |
+| `src/queueModel.js` | Shared `{ persona, queue, tonight, hours }` |
+| `src/pairing.js` | Supabase client, pairing API, Realtime |
+| `src/usePairingSync.js` | Hydrate + debounced remote sync |
+| `src/watchTonight.js` | `TV_APP_URL`, `googleSearchUrl`, `formatRuntime` |
+| `src/shareStill.js` | Canvas strand PNG export (Slice 6) |
 
 ### Views
 
 | File | Role |
 |------|------|
-| `src/Void.jsx` + `Placement.jsx` | Landing + four pins |
-| `src/ThreadfieldView.jsx` | Strand + Tonight card + horizon chrome |
-| `src/ListView.jsx` | Full list + Tonight aside + horizon chrome |
-| `src/Threadfield.jsx` | SVG strand, beads, poster thumbs, line-draw animation |
-| `src/threadfieldLayout.js` | Dynamic width/spacing so thumbs don’t overlap |
-| `src/ThreadfieldThumb.jsx` | Poster tile (bright = tonight, dim = others) |
-| `src/TonightCard.jsx` | Tonight actions |
-| `src/HorizonChrome.jsx` | Bottom bar: hours + days + Fit to pace |
-| `src/DesignGallery.jsx` | `/design` mocks |
+| `src/Void.jsx` + `Placement.jsx` | Landing + four pins + atmosphere |
+| `src/ThreadfieldView.jsx` | Strand + Tonight + horizon + share still |
+| `src/ListView.jsx` | Full list + Tonight aside |
+| `src/TonightCard.jsx` | Tonight actions + On your TV pairing panel |
+| `src/HorizonChrome.jsx` | Hours + days + Fit to pace |
+
+### Android (`android/`)
+
+| File | Role |
+|------|------|
+| `RunupViewModel.kt` | Pairing, placement, queue, marks, polling |
+| `MainActivity.kt` | Pairing → Placement → Threadfield flow |
+| `ui/PairingScreen.kt` | 6-digit code entry |
+| `ui/ThreadfieldScreen.kt` | Strand + Tonight + horizon |
+| `ui/PlacementScreen.kt` | Four pins on TV |
+| `domain/RemainingQueue.kt` | Port of web queue math |
+| `util/StreamingLauncher.kt` | Disney+ deep link + search fallback |
+| `data/SessionRepository.kt` | `sessionId` + `deviceToken` in prefs |
+
+### Supabase (`supabase/`)
+
+| Piece | Role |
+|-------|------|
+| `migrations/20260831000000_tv_pairing.sql` | `sessions`, `pairing_codes`, `devices` |
+| `functions/session-bootstrap` | Create session, seed state |
+| `functions/pairing-code` | Generate 6-digit code |
+| `functions/pair` | TV enters code → `deviceToken` |
+| `functions/state` | GET/PATCH `runup.v1` shape |
+| `functions/devices` | List / unpair |
+
+### `localStorage` keys
+
+| Key | Shape |
+|-----|-------|
+| `runup.v1` | `{ v, personaId, budgetHours, watchedIds, skippedIds }` |
+| `runup.session` | `{ sessionId }` — Supabase session |
 
 ---
 
-## Threadfield + posters (recent work)
+## Pairing flow
 
-### Layout
-
-- Poster thumbnails sit **above** each bead.
-- Sizes scale by queue length (~96×144 for 9–12 titles).
-- **Horizontal scroll** when queue is wide (`threadfield-scroll`); strand width grows with `thumbWidth + 20px` gap per node.
-- Tonight thumb: bright border/glow. Others: dimmed via CSS `filter` + opacity.
-
-### Posters
-
-- Each title has `tmdbPosterPath` in `data/official-15.json` (paths verified Aug 2026).
-- Images loaded from `https://image.tmdb.org/t/p/w500{path}`.
-- Attribution: “Posters via TMDB” in Threadfield meta line.
-- `onError` on `<img>` falls back to gradient placeholder.
-
-### Known polish opportunities
-
-- Long queues (12+) still feel dense — consider showing labels only on tonight + next 2.
-- Pace warning rarely fires with ~110 days left and ~30h queue (math is correct; threshold is ~2h/day).
-- `TV_APP_URL` in `src/watchTonight.js` is `null` — Play Store link pending Slice 7.
-- Compare live UI to `public/mocks/runup-03-threadfield.png` and `runup-04-tonight.png` before calling v0 done.
+```
+Web (Watch tonight → On your TV)          Supabase                    Android TV
+────────────────────────────────          ────────                    ──────────
+ensureSession() → sessionId               sessions row
+createPairingCode() → 6-digit code    ←→  pairing_codes
+QR → runup.app/pair?code=…                                           User enters code
+                                                                     POST /pair → deviceToken
+listDevices() ← paired TVs                devices row
+markAlreadySeen / placement          ←→  state PATCH + Realtime  →  refreshState()
+```
 
 ---
 
-## What to build next
+## Verification checklist (Slice 7)
 
-### Slice 6 — PWA + share still
+| # | Test | Expected |
+|---|------|----------|
+| 1 | Web without `.env` | Static TV install copy; no pairing errors |
+| 2 | Web with Supabase | Code + QR + device list in On your TV |
+| 3 | TV pair with code | TV shows Threadfield / Tonight matching web head |
+| 4 | Already seen on TV | Title leaves queue on web (Realtime) |
+| 5 | Skip on TV | Gone from strand; not in `watchedIds` |
+| 6 | Unpair on web | TV re-pair on next open |
+| 7 | Open in provider | Disney+ or search fallback |
+| 8 | Empty queue | Path-complete screen |
 
-From `IMPLEMENTATION.md`:
-
-- [ ] `manifest.json` + original icons (not Marvel); `start_url: "/"`
-- [ ] Canvas snapshot of strand → downloadable PNG (no spoilers in image)
-
-### Slice 7 — Google TV companion (post-v0)
-
-- Android TV app; deep-link Tonight’s title to OTT provider.
-- Wire `TV_APP_URL` in `src/watchTonight.js` when published.
-
-### Explicitly later
-
-- 166-title catalog, Google sync, JustWatch, Fox/Sony JSON, App Store.
+Fix `usePairingSync` import before relying on test 4.
 
 ---
 
 ## Git state
 
-**All implementation work from this session is local and uncommitted.**
+**Branch:** `cursor/slice-7-google-tv`  
+**Base:** `main` @ `934d061` (Merge PR #2 — Runup v0)
 
-Modified: `IMPLEMENTATION.md`, `data/official-15.json`, `src/App.jsx`, `src/styles.css`  
-New: `CONTEXT.md`, `docs/adr/`, `data/personas.json`, most of `src/*`, `.env.example`
+**Modified:** `CONTEXT.md`, `HANDOFF.md`, `IMPLEMENTATION.md`, `README.md`, `data/official-15.json`, `package.json`, `package-lock.json`, `src/App.jsx`, `src/Placement.jsx`, `src/TonightCard.jsx`, `src/Void.jsx`, `src/placementOptions.js`, `src/styles.css`
 
-Suggested first step in new session:
+**Deleted:** `.env.example`
+
+**New (untracked):** `android/`, `supabase/`, `docs/adr/0002-*.md`, `docs/plans/`, `public/backgrounds/`, `public/data/`, `scripts/generate-void-background.py`, `src/pairing.js`, `src/usePairingSync.js`
+
+Suggested first steps in a new session:
 
 ```bash
 git status
-git checkout -b cursor/slices-1-5-threadfield
+# Fix usePairingSync loadState import
+# Restore .env.example
+# Decide TV scope (Tonight-only vs full Threadfield)
+# Deploy Supabase, test pairing loop on emulator
 git add -A
-git commit -m "Implement slices 1–5: placement, tonight, horizon, threadfield, list."
+git commit -m "Slice 7: Supabase pairing, web sync, Android TV companion."
 ```
+
+---
+
+## What to build next
+
+1. Fix `usePairingSync.js` missing `loadState` import
+2. Restore `.env.example` and add `android/local.properties.example`
+3. Deploy Supabase (link project, `db push`, deploy functions)
+4. End-to-end pairing test (web ↔ emulator)
+5. Resolve Android scope vs ADR (Tonight-only or update ADR)
+6. Set `TV_APP_URL` when Play Store listing is live
+7. Phase 7 polish: offline errors, TV focus order, physical device test
+
+### Explicitly later
+
+- 166-title catalog, Google sync, JustWatch, Fox/Sony JSON, iOS App Store
 
 ---
 
@@ -201,10 +305,13 @@ git commit -m "Implement slices 1–5: placement, tonight, horizon, threadfield,
 
 ## Prompt for next session
 
-Copy-paste to continue:
-
 ```
-Continue Runup from HANDOFF.md. Slice 6 next (PWA + share still).
-Read CONTEXT.md and IMPLEMENTATION.md first. Repo is at [path].
-Uncommitted work covers slices 1–5 + threadfield poster thumbs.
+Continue Runup from HANDOFF.md on branch cursor/slice-7-google-tv.
+
+Read: CONTEXT.md, docs/adr/0002-tv-companion-via-supabase-pairing.md,
+docs/plans/slice-7-google-tv.md.
+
+Priority: fix usePairingSync bug, restore .env.example, deploy Supabase,
+verify pairing loop on TV emulator. Decide whether Android stays
+Tonight-only (per ADR) or keeps Threadfield + placement.
 ```

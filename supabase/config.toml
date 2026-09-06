@@ -1,0 +1,31 @@
+project_id = "runup"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[realtime]
+enabled = true
+
+[functions.session-bootstrap]
+verify_jwt = false
+
+[functions.pair]
+verify_jwt = false
+
+[functions.pairing-code]
+verify_jwt = false
+
+[functions.devices]
+verify_jwt = false
+
+[functions.state]
+verify_jwt = false
+

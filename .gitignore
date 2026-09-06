@@ -1,6 +1,9 @@
 node_modules
 runup-export
 dist
+.next
+out
+supabase/.temp
 .DS_Store
 *.local
 .env
