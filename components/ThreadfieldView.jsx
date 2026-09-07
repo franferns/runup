@@ -8,6 +8,7 @@ import { downloadShareStill } from "../lib/shareStill.js";
 import { applyFitToPace, markAlreadySeen, markSkipped } from "../lib/storage.js";
 import Threadfield from "./Threadfield.jsx";
 import TonightCard from "./TonightCard.jsx";
+import VoidAtmosphere from "./VoidAtmosphere.jsx";
 import { usePageTitle } from "./usePageTitle.js";
 import { useCallback, useState } from "react";
 
@@ -91,6 +92,8 @@ export default function ThreadfieldView({
 
   return (
     <div className="shell threadfield-shell">
+      <VoidAtmosphere />
+
       <header className="list-header">
         <div>
           <div className="brand">RUNUP</div>

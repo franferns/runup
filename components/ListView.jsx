@@ -5,6 +5,7 @@ import { buildQueueModel } from "../lib/queueModel.js";
 import { applyFitToPace, markAlreadySeen, markSkipped } from "../lib/storage.js";
 import RemainingQueueList from "./RemainingQueueList.jsx";
 import TonightCard from "./TonightCard.jsx";
+import VoidAtmosphere from "./VoidAtmosphere.jsx";
 import { usePageTitle } from "./usePageTitle.js";
 
 export default function ListView({
@@ -43,6 +44,8 @@ export default function ListView({
 
   return (
     <div className="shell queue-shell list-fallback-shell">
+      <VoidAtmosphere />
+
       <header className="list-header">
         <div>
           <div className="brand">RUNUP</div>

@@ -656,6 +656,9 @@ body {
 }
 
 .queue-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding-bottom: 120px;
 }
 
@@ -998,8 +1001,17 @@ body {
 }
 
 .threadfield-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding-bottom: 120px;
   min-width: 0;
+}
+
+.threadfield-shell > :not(.void-atmosphere),
+.queue-shell > :not(.void-atmosphere) {
+  position: relative;
+  z-index: 1;
 }
 
 .threadfield {
@@ -1150,21 +1162,21 @@ body {
 }
 
 .threadfield-thumb.is-dim {
-  opacity: 0.55;
-  border-color: rgba(232, 165, 75, 0.28);
-  box-shadow: none;
+  opacity: 0.68;
+  border-color: rgba(232, 165, 75, 0.36);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
 }
 
 .threadfield-thumb.is-dim .threadfield-thumb-photo {
-  filter: saturate(0.45) brightness(0.62);
+  filter: saturate(0.58) brightness(0.74);
 }
 
 .threadfield-thumb.is-dim .threadfield-thumb-art {
   background: linear-gradient(
     160deg,
-    rgba(232, 165, 75, 0.22) 0%,
-    rgba(50, 48, 44, 0.72) 50%,
-    rgba(11, 12, 16, 0.95) 100%
+    rgba(232, 165, 75, 0.32) 0%,
+    rgba(62, 54, 44, 0.72) 50%,
+    rgba(11, 12, 16, 0.92) 100%
   );
 }
 
