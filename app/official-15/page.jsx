@@ -1,12 +1,14 @@
 import Official15Page from "../../components/Official15Page.jsx";
 import { getOrderedTitles } from "../../lib/catalog.js";
 import { getOfficial15Content } from "../../lib/official15Content.js";
+import { ogImage, trimSocialDescription } from "../../lib/socialMeta.js";
 import { getSiteUrl } from "../../lib/siteUrl.js";
 
 const siteUrl = getSiteUrl();
 const pageUrl = `${siteUrl}/official-15`;
 
 const { frontmatter } = getOfficial15Content();
+const socialDescription = trimSocialDescription(frontmatter.description);
 
 export const metadata = {
   title: frontmatter.title,
@@ -16,17 +18,22 @@ export const metadata = {
   },
   openGraph: {
     title: frontmatter.title,
-    description: frontmatter.description,
+    description: socialDescription,
     url: pageUrl,
     siteName: "Runup",
-    images: [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
+    images: [
+      ogImage(
+        "/og/runup-official-15.png",
+        "Official 15 MCU homework list for Avengers: Doomsday",
+      ),
+    ],
     type: "article",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: frontmatter.title,
-    description: frontmatter.description,
-    images: ["/icons/icon-512.png"],
+    description: socialDescription,
+    images: ["/og/runup-official-15.png"],
   },
 };
 

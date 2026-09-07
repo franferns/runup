@@ -2,6 +2,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { getOrderedTitles } from "../lib/catalog.js";
 import { getOfficial15Content } from "../lib/official15Content.js";
+import VoidAtmosphere from "./VoidAtmosphere.jsx";
 
 export default function Official15Page() {
   const { frontmatter, content } = getOfficial15Content();
@@ -9,6 +10,8 @@ export default function Official15Page() {
 
   return (
     <div className="shell official15-shell">
+      <VoidAtmosphere />
+
       <header className="official15-header">
         <div className="brand">RUNUP</div>
         <p className="disclaimer">{frontmatter.disclaimer}</p>

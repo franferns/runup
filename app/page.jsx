@@ -1,30 +1,40 @@
 import LandingPage from "../components/LandingPage.jsx";
+import { ogImage, trimSocialDescription } from "../lib/socialMeta.js";
 import { getSiteUrl } from "../lib/siteUrl.js";
 
 const siteUrl = getSiteUrl();
 
+const pageDescription =
+  "Spoiler-safe watch order and homework list for Avengers: Doomsday. Track the Disney+ Official 15 catch-up path before December 2026.";
+
+const socialDescription = trimSocialDescription(
+  "Spoiler-safe watch order for Avengers: Doomsday. Track the Disney+ Official 15 catch-up path before December 2026.",
+);
+
 export const metadata = {
   title: "Runup — spoiler-safe MCU catch-up for Avengers: Doomsday",
-  description:
-    "Spoiler-safe watch order and homework list for Avengers: Doomsday. Track the Disney+ Official 15 catch-up path before December 2026.",
+  description: pageDescription,
   alternates: {
     canonical: siteUrl,
   },
   openGraph: {
     title: "Runup — spoiler-safe MCU catch-up for Avengers: Doomsday",
-    description:
-      "Spoiler-safe watch order and homework list for Avengers: Doomsday. Track the Disney+ Official 15 catch-up path before December 2026.",
+    description: socialDescription,
     url: siteUrl,
     siteName: "Runup",
-    images: [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
+    images: [
+      ogImage(
+        "/og/runup-home.png",
+        "Runup — spoiler-safe catch-up for Avengers: Doomsday",
+      ),
+    ],
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Runup — spoiler-safe MCU catch-up for Avengers: Doomsday",
-    description:
-      "Spoiler-safe watch order and homework list for Avengers: Doomsday. Track the Disney+ Official 15 catch-up path before December 2026.",
-    images: ["/icons/icon-512.png"],
+    description: socialDescription,
+    images: ["/og/runup-home.png"],
   },
 };
 

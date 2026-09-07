@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCatalog } from "../lib/catalog.js";
 import { daysUntilHorizon, formatDaysLeft } from "../lib/horizon.js";
+import VoidAtmosphere from "./VoidAtmosphere.jsx";
 
 export default function LandingPage() {
   const catalog = getCatalog();
@@ -8,6 +9,8 @@ export default function LandingPage() {
 
   return (
     <div className="shell landing-shell">
+      <VoidAtmosphere />
+
       <header className="landing-header">
         <div className="brand">RUNUP</div>
         <p className="disclaimer">{catalog.disclaimer}</p>

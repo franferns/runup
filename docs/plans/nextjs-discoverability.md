@@ -334,6 +334,8 @@ Low priority — landing already has server-rendered copy in JSX. Do this if you
 
 ### Phase 5 — OG image & polish
 
+**Plan:** [social-preview-seo.md](./social-preview-seo.md)
+
 - [ ] Generate dedicated OG image (1200×630) — not just the square app icon
 - [ ] Add `og:image` pointing to `/og/runup-official-15.png` on `/official-15`
 - [ ] Add `metadata.alternates.canonical` on both public pages (partially done)
