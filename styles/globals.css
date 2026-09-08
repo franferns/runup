@@ -1592,7 +1592,8 @@ body {
   margin: 0 0 16px;
 }
 
-.official15-markdown ol {
+.official15-markdown ol,
+.official15-markdown ul {
   margin: 0 0 24px;
   padding-left: 1.25em;
   display: grid;
@@ -1603,6 +1604,26 @@ body {
   color: var(--muted);
   line-height: 1.6;
   padding-left: 0.25em;
+}
+
+.official15-markdown a {
+  color: var(--amber);
+  text-decoration: none;
+}
+
+.official15-markdown a:hover {
+  text-decoration: underline;
+}
+
+.official15-footer a,
+.landing-footer a {
+  color: var(--amber);
+  text-decoration: none;
+}
+
+.official15-footer a:hover,
+.landing-footer a:hover {
+  text-decoration: underline;
 }
 
 .official15-markdown li strong {
