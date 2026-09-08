@@ -49,7 +49,8 @@ export default function LandingPage() {
 
       <footer className="landing-footer">
         <p className="data-note">
-          Horizon {catalog.horizon} · Disney+ Official 15 track
+          Horizon {catalog.horizon} · Disney+ Official 15 track ·{" "}
+          <Link href="/privacy">Privacy</Link>
         </p>
       </footer>
     </div>

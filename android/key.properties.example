@@ -1,0 +1,4 @@
+storePassword=your-keystore-password
+keyPassword=your-key-password
+keyAlias=runup
+storeFile=app/runup-release.jks
