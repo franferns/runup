@@ -184,6 +184,7 @@ export default function Threadfield({
                 const title = strandQueue[index];
                 const isTonight = title.strandStatus === "tonight";
                 const isWatched = title.strandStatus === "watched";
+                const isSkipped = title.strandStatus === "skipped";
                 const isCompleting = title.id === completingId;
 
                 return (
@@ -202,6 +203,7 @@ export default function Threadfield({
                       thumbSize={thumbSize}
                       isTonight={isTonight}
                       isWatched={isWatched}
+                      isSkipped={isSkipped}
                       isCompleting={isCompleting}
                       queueLength={strandQueue.length}
                     />
@@ -232,6 +234,7 @@ export default function Threadfield({
                 const title = strandQueue[index];
                 const isTonight = title.strandStatus === "tonight";
                 const isWatched = title.strandStatus === "watched";
+                const isSkipped = title.strandStatus === "skipped";
                 const isCompleting = title.id === completingId;
                 const radius = point.beadRadius ?? getBeadRadius(isTonight);
 
@@ -242,10 +245,16 @@ export default function Threadfield({
                 if (isWatched || isCompleting) {
                   nodeClass += " is-watched";
                 }
+                if (isSkipped) {
+                  nodeClass += " is-skipped";
+                }
 
                 let groupClass = "threadfield-node-group";
                 if (isWatched || isCompleting) {
                   groupClass += " is-watched";
+                }
+                if (isSkipped) {
+                  groupClass += " is-skipped";
                 }
 
                 return (

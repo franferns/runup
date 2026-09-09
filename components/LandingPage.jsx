@@ -40,6 +40,9 @@ export default function LandingPage() {
             <Link href="/app" className="landing-cta landing-cta-primary">
               Start your path
             </Link>
+            <Link href="/pair" className="landing-cta">
+              Pair TV
+            </Link>
             <Link href="/official-15" className="landing-cta">
               See the Official 15 list
             </Link>

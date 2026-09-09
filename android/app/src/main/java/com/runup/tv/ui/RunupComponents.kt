@@ -50,9 +50,9 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 
 private val SheetShape = RoundedCornerShape(24.dp)
-private val PillShape = RoundedCornerShape(999.dp)
-private val KeyShape = RoundedCornerShape(16.dp)
-private val DigitShape = RoundedCornerShape(14.dp)
+private val PillShape = RoundedCornerShape(12.dp)
+private val KeyShape = RoundedCornerShape(12.dp)
+private val DigitShape = RoundedCornerShape(12.dp)
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -97,14 +97,14 @@ fun RunupBottomSheet(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val horizontalPadding = if (compact) 24.dp else 40.dp
-    val verticalPadding = if (compact) 16.dp else 28.dp
-    val spacing = if (compact) 8.dp else 12.dp
+    val verticalPadding = if (compact) 12.dp else 28.dp
+    val spacing = if (compact) 6.dp else 12.dp
 
     Box(modifier = modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .padding(bottom = 12.dp)
+                .padding(bottom = if (compact) 0.dp else 12.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -491,7 +491,7 @@ fun RunupTonightActions(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 10.dp),
+            .padding(top = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         content = content,

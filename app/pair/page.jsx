@@ -1,4 +1,6 @@
 import Link from "next/link";
+import TvPairingPanel from "../../components/TvPairingPanel.jsx";
+import VoidAtmosphere from "../../components/VoidAtmosphere.jsx";
 import { getCatalog } from "../../lib/catalog.js";
 
 export const metadata = {
@@ -6,17 +8,24 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
+function normalizePairCode(rawCode) {
+  if (typeof rawCode !== "string") {
+    return null;
+  }
+
+  const digits = rawCode.replace(/\D/g, "").slice(0, 6);
+  return digits.length === 6 ? digits : null;
+}
+
 export default async function PairPage({ searchParams }) {
   const params = await searchParams;
-  const rawCode = params?.code;
-  const code =
-    typeof rawCode === "string"
-      ? rawCode.toUpperCase().replace(/[^A-Z0-9]/g, "")
-      : null;
+  const urlCode = normalizePairCode(params?.code);
   const catalog = getCatalog();
 
   return (
     <div className="shell pair-shell">
+      <VoidAtmosphere />
+
       <header>
         <div className="brand">RUNUP</div>
         <p className="disclaimer">{catalog.disclaimer}</p>
@@ -24,27 +33,31 @@ export default async function PairPage({ searchParams }) {
 
       <main className="pair-main">
         <h1>Pair your TV</h1>
-        {code ? (
+
+        {urlCode ? (
           <>
             <p>
-              Enter this code on your Runup TV app to sync your catch-up session:
+              Enter this code on your Runup TV app to sync your catch-up session
+              for Tonight.
             </p>
-            <p className="pair-code" aria-label={`Pairing code ${code}`}>
-              {code.length >= 6
-                ? `${code.slice(0, 3)} ${code.slice(3, 6)}`
-                : code}
-            </p>
+            <div className="tonight-pairing-code-block">
+              <p className="tonight-pairing-code" aria-label={`Pairing code ${urlCode}`}>
+                {urlCode.slice(0, 3)} {urlCode.slice(3)}
+              </p>
+            </div>
           </>
         ) : (
-          <p>
-            Open Runup on your phone or browser, choose Watch tonight, and scan
-            the QR code shown there — or enter the code from that screen on your
-            TV.
-          </p>
+          <>
+            <p>
+              Open the Runup app on your Android TV, enter the code below, and
+              your queue will sync for Tonight.
+            </p>
+            <TvPairingPanel standalone />
+          </>
         )}
-        <p>
-          <Link href="/app">Open Runup</Link> to generate a pairing code from
-          Tonight.
+
+        <p className="pair-back">
+          <Link href="/">Back to home</Link>
         </p>
       </main>
     </div>

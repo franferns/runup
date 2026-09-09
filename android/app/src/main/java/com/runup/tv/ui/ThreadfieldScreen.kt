@@ -3,27 +3,19 @@ package com.runup.tv.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,129 +46,119 @@ fun ThreadfieldScreen(
     behindPace: Boolean,
     dailyHoursNeeded: Double,
     onChangePlacement: () -> Unit,
+    onResetProgress: () -> Unit,
     onOpenProvider: () -> Unit,
     onAlreadySeen: () -> Unit,
     onSkip: () -> Unit,
     onFitToPace: () -> Unit,
 ) {
     RunupAppBackground {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 16.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "RUNUP",
-                    color = RunupColors.Text,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 5.sp,
-                )
-                RunupPillButton(
-                    text = "Change placement",
-                    onClick = onChangePlacement,
-                    compact = true,
-                    modifier = Modifier.widthIn(max = 220.dp),
-                )
-            }
-
-            BoxWithConstraints(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
+                    .fillMaxSize()
+                    .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp),
             ) {
-                val density = LocalDensity.current
-                val gapPx = with(density) { 16.dp.roundToPx() }
-                var bottomSectionHeightPx by remember { mutableIntStateOf(0) }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .onSizeChanged { bottomSectionHeightPx = it.height },
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .widthIn(max = 960.dp)
-                            .align(Alignment.CenterHorizontally),
-                    ) {
-                        when {
-                            error != null -> {
-                                RunupBottomSheet(compact = true) {
-                                    RunupEyebrow("Tonight")
-                                    RunupTitle("Something went wrong")
-                                    RunupBody(error)
-                                }
-                            }
-                            tonight == null -> {
-                                RunupBottomSheet(compact = true) {
-                                    RunupEyebrow("Tonight")
-                                    RunupTitle("Path complete")
-                                    RunupBody(
-                                        if (daysLeft > 0) {
-                                            "$daysLeft days until the horizon."
-                                        } else {
-                                            "Nothing left on this queue. You are caught up."
-                                        },
-                                    )
-                                }
-                            }
-                            else -> {
-                                TonightBottomSheet(
-                                    title = tonight,
-                                    loading = loading,
-                                    onOpenProvider = onOpenProvider,
-                                    onAlreadySeen = onAlreadySeen,
-                                    onSkip = onSkip,
-                                )
-                            }
-                        }
-
-                        if (personaLabel != null) {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 6.dp, bottom = 6.dp),
-                                text = "$personaLabel$budgetNote · $queueCount titles",
-                                color = RunupColors.Muted,
-                                fontSize = 12.sp,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
+                    Text(
+                        text = "RUNUP",
+                        color = RunupColors.Text,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 5.sp,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        RunupPillButton(
+                            text = "Change placement",
+                            onClick = onChangePlacement,
+                            compact = true,
+                            modifier = Modifier.widthIn(max = 220.dp),
+                        )
+                        RunupPillButton(
+                            text = "Reset progress",
+                            onClick = onResetProgress,
+                            compact = true,
+                            modifier = Modifier.widthIn(max = 220.dp),
+                        )
                     }
                 }
 
-                val threadHeightPx = (constraints.maxHeight - bottomSectionHeightPx - gapPx).coerceAtLeast(0)
-                val threadHeight = with(density) { threadHeightPx.toDp() }
+                Spacer(modifier = Modifier.height(12.dp))
 
-                if (threadHeightPx > 0) {
-                    ThreadfieldStrand(
-                        strandQueue = strandQueue,
-                        isDrawing = isDrawing,
-                        completingId = completingId,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .fillMaxWidth()
-                            .height(threadHeight),
-                    )
+                ThreadfieldStrand(
+                    strandQueue = strandQueue,
+                    isDrawing = isDrawing,
+                    completingId = completingId,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .widthIn(max = 960.dp)
+                        .align(Alignment.CenterHorizontally),
+                ) {
+                    when {
+                        error != null -> {
+                            RunupBottomSheet(compact = true) {
+                                RunupEyebrow("Tonight")
+                                RunupTitle("Something went wrong")
+                                RunupBody(error)
+                            }
+                        }
+                        tonight == null -> {
+                            RunupBottomSheet(compact = true) {
+                                RunupEyebrow("Tonight")
+                                RunupTitle("Path complete")
+                                RunupBody(
+                                    if (daysLeft > 0) {
+                                        "$daysLeft days until the horizon."
+                                    } else {
+                                        "Nothing left on this queue. You are caught up."
+                                    },
+                                )
+                            }
+                        }
+                        else -> {
+                            TonightBottomSheet(
+                                title = tonight,
+                                loading = loading,
+                                onOpenProvider = onOpenProvider,
+                                onAlreadySeen = onAlreadySeen,
+                                onSkip = onSkip,
+                            )
+                        }
+                    }
+
+                    if (personaLabel != null) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 2.dp),
+                            text = "$personaLabel$budgetNote · $queueCount titles",
+                            color = RunupColors.Muted,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
                 }
-            }
 
-            HorizonChrome(
-                queueHours = queueHours,
-                daysLeft = daysLeft,
-                horizon = horizon,
-                behindPace = behindPace,
-                dailyHoursNeeded = dailyHoursNeeded,
-                onFitToPace = onFitToPace,
-            )
+                HorizonChrome(
+                    queueHours = queueHours,
+                    daysLeft = daysLeft,
+                    horizon = horizon,
+                    behindPace = behindPace,
+                    dailyHoursNeeded = dailyHoursNeeded,
+                    onFitToPace = onFitToPace,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }

@@ -67,6 +67,7 @@ class MainActivity : ComponentActivity() {
                             behindPace = uiState.behindPace,
                             dailyHoursNeeded = uiState.dailyHoursNeeded,
                             onChangePlacement = viewModel::openPlacement,
+                            onResetProgress = viewModel::requestResetProgress,
                             onOpenProvider = {
                                 uiState.tonight?.streaming?.let {
                                     StreamingLauncher.openInProvider(this@MainActivity, it)
@@ -89,6 +90,19 @@ class MainActivity : ComponentActivity() {
                             error = uiState.error,
                             onConfirm = viewModel::confirmPlacementChange,
                             onDismiss = viewModel::dismissPlacementConfirm,
+                        )
+                    }
+
+                    if (uiState.pendingReset) {
+                        RunupConfirmDialog(
+                            title = "Reset progress?",
+                            message = "This clears your watched and skipped titles on this TV and the web app.",
+                            confirmText = "Reset",
+                            dismissText = "Cancel",
+                            loading = uiState.loading,
+                            error = uiState.error,
+                            onConfirm = viewModel::confirmResetProgress,
+                            onDismiss = viewModel::dismissResetConfirm,
                         )
                     }
                 }

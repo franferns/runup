@@ -18,6 +18,7 @@ export default function ThreadfieldThumb({
   thumbSize: thumbSizeProp,
   isTonight,
   isWatched,
+  isSkipped,
   isCompleting,
   queueLength,
 }) {
@@ -28,10 +29,13 @@ export default function ThreadfieldThumb({
   const [imageFailed, setImageFailed] = useState(false);
   const showPhoto = imageUrl && !imageFailed;
   const showTick = isWatched || isCompleting;
+  const showSkip = isSkipped;
 
   let className = "threadfield-thumb";
   if (isWatched || isCompleting) {
     className += " is-watched";
+  } else if (isSkipped) {
+    className += " is-skipped";
   } else if (isTonight) {
     className += " is-tonight";
   } else {
@@ -67,6 +71,18 @@ export default function ThreadfieldThumb({
               strokeWidth="2.25"
               strokeLinecap="round"
               strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      )}
+      {showSkip && (
+        <span className="threadfield-thumb-skip" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="12" height="12" fill="none">
+            <path
+              d="M5 10h10"
+              stroke="currentColor"
+              strokeWidth="2.25"
+              strokeLinecap="round"
             />
           </svg>
         </span>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { getCatalog } from "../lib/catalog.js";
 import { daysUntilHorizon, formatDaysLeft } from "../lib/horizon.js";
 import Placement from "./Placement.jsx";
@@ -13,9 +14,19 @@ export default function Void({ state, onPlaced }) {
     <div className="shell void-shell">
       <VoidAtmosphere />
 
-      <header className="void-header">
-        <div className="brand">RUNUP</div>
-        <p className="disclaimer">{catalog.disclaimer}</p>
+      <header className="list-header void-header">
+        <div>
+          <div className="brand">RUNUP</div>
+          <p className="disclaimer">{catalog.disclaimer}</p>
+        </div>
+        <div className="header-actions">
+          <Link href="/" className="text-button">
+            Home
+          </Link>
+          <Link href="/pair" className="text-button">
+            Pair TV
+          </Link>
+        </div>
       </header>
 
       <main className="void-stage">
