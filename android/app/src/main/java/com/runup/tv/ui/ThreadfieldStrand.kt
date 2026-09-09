@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,36 +65,24 @@ fun ThreadfieldStrand(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .clip(RectangleShape),
     ) {
-        val viewportHeightPx = constraints.maxHeight.toFloat().coerceAtLeast(96f)
         val viewportWidthPx = constraints.maxWidth.toFloat()
+        val viewportHeightPx = constraints.maxHeight.toFloat().coerceAtLeast(1f)
         val density = LocalDensity.current
-        val scrollMode = viewportWidthPx > 0 &&
-            viewportWidthPx < ThreadfieldLayoutEngine.SCROLL_MODE_BREAKPOINT
-        val layout = remember(strandQueue.size, scrollMode) {
-            ThreadfieldLayoutEngine.getLayout(strandQueue.size, scrollMode)
+        val layout = remember(strandQueue.size, viewportWidthPx, viewportHeightPx) {
+            ThreadfieldLayoutEngine.getLayoutForViewport(
+                count = strandQueue.size,
+                viewportWidth = viewportWidthPx,
+                viewportHeight = viewportHeightPx,
+                scrollMode = false,
+            )
         }
-        val focusIndex = strandQueue.indexOfFirst { it.strandStatus == StrandStatus.Tonight }
-            .let { if (it >= 0) it else 0 }
         val drawFromIndex = completingId?.let { id ->
             strandQueue.indexOfFirst { it.title.id == id }.takeIf { it >= 0 }
-        } ?: focusIndex
-
-        val totalScale = (viewportHeightPx / layout.contentHeight).coerceIn(0.72f, 1.12f)
-        val scaledWidth = layout.width * totalScale
-        val needsPan = scrollMode || scaledWidth > viewportWidthPx
-        val focusX = layout.positions.getOrNull(focusIndex)?.x ?: 0f
-        val panOffset = if (needsPan) {
-            ThreadfieldLayoutEngine.getCenteredPanOffset(
-                focusX = focusX,
-                viewportWidth = viewportWidthPx,
-                contentWidth = layout.width,
-                scale = totalScale,
-            )
-        } else {
-            (viewportWidthPx - scaledWidth) / 2f
-        }
+        } ?: strandQueue.indexOfFirst { it.strandStatus == StrandStatus.Tonight }
+            .let { if (it >= 0) it else 0 }
 
         val strandPath = remember(layout.positions) {
             ThreadfieldLayoutEngine.strandPathFromPoints(layout.positions)
@@ -107,30 +96,13 @@ fun ThreadfieldStrand(
             label = "drawProgress",
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = totalScale
-                    scaleY = totalScale
-                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0f)
-                    translationX = panOffset
-                    translationY = -layout.contentTop * totalScale
-                },
-        ) {
-            Box(
-                modifier = with(density) {
-                    Modifier
-                        .width(layout.width.toDp())
-                        .height(layout.height.toDp())
-                },
-            ) {
+        Box(modifier = Modifier.fillMaxSize()) {
                 ThreadfieldHorizonOrb()
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     drawPath(
                         path = strandPath,
-                        color = Color(0x6BE8A54B),
-                        style = Stroke(width = 2.5f, cap = StrokeCap.Round),
+                        color = Color(0xB3E8A54B),
+                        style = Stroke(width = 3f, cap = StrokeCap.Round),
                     )
                     if (isDrawing) {
                         val measure = PathMeasure()
@@ -197,7 +169,7 @@ fun ThreadfieldStrand(
                     val isCompleting = item.title.id == completingId
                     val showLabel = strandQueue.size <= 8
                     val posterUrl = item.title.tmdbPosterPath?.let {
-                        "https://image.tmdb.org/t/p/w154$it"
+                        "https://image.tmdb.org/t/p/w342$it"
                     }
 
                     with(density) {
@@ -299,7 +271,6 @@ fun ThreadfieldStrand(
                         }
                     }
                 }
-            }
         }
     }
 }

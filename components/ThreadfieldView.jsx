@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import HorizonChrome from "./HorizonChrome.jsx";
 import { prefersReducedMotion } from "../lib/motion.js";
 import { buildQueueModel } from "../lib/queueModel.js";
@@ -15,6 +16,8 @@ import { useCallback, useState } from "react";
 export default function ThreadfieldView({
   state,
   onChangePlacement,
+  onResetProgress,
+  resetDisabled = false,
   onStateChange,
   onOpenList,
   reduceMotion = false,
@@ -111,8 +114,22 @@ export default function ThreadfieldView({
           <button type="button" className="text-button" onClick={onOpenList}>
             List view
           </button>
+          <Link href="/" className="text-button">
+            Home
+          </Link>
+          <Link href="/pair" className="text-button">
+            Pair TV
+          </Link>
           <button type="button" className="text-button" onClick={onChangePlacement}>
             Change placement
+          </button>
+          <button
+            type="button"
+            className="text-button"
+            onClick={onResetProgress}
+            disabled={resetDisabled}
+          >
+            Reset progress
           </button>
         </div>
       </header>

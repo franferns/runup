@@ -95,6 +95,7 @@ class SupabaseApi(
             budgetHours = json.optDouble("budgetHours").let { if (it.isNaN()) null else it },
             watchedIds = json.optJSONArray("watchedIds").toIds(),
             skippedIds = json.optJSONArray("skippedIds").toIds(),
+            progressEpoch = json.optInt("progressEpoch", 0),
         )
     }
 

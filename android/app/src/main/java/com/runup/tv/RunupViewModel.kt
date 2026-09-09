@@ -30,6 +30,7 @@ data class RunupUiState(
     val pairingError: String? = null,
     val placementMode: Boolean = false,
     val pendingPlacement: PlacementOption? = null,
+    val pendingReset: Boolean = false,
     val strandQueue: List<StrandTitle> = emptyList(),
     val tonight: CatalogTitle? = null,
     val personaLabel: String? = null,
@@ -162,6 +163,55 @@ class RunupViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(pendingPlacement = null, error = null) }
     }
 
+    fun requestResetProgress() {
+        val state = runupState ?: return
+        if (state.watchedIds.isEmpty() && state.skippedIds.isEmpty()) {
+            return
+        }
+        _uiState.update { it.copy(pendingReset = true, error = null) }
+    }
+
+    fun dismissResetConfirm() {
+        _uiState.update { it.copy(pendingReset = false, error = null) }
+    }
+
+    fun confirmResetProgress() {
+        val sessionId = sessionRepo.getSessionId()
+        val deviceToken = sessionRepo.getDeviceToken()
+        if (sessionId == null || deviceToken == null) {
+            _uiState.update {
+                it.copy(error = "Session expired — pair again from the web app")
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(loading = true, error = null) }
+            try {
+                val patch = JSONObject().put("resetProgress", true)
+                val next = withContext(Dispatchers.IO) {
+                    api.patchState(sessionId, deviceToken, patch)
+                }
+                runupState = next
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        pendingReset = false,
+                        error = null,
+                    )
+                }
+                renderState(next)
+            } catch (err: Exception) {
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        error = err.message ?: "Could not reset progress",
+                    )
+                }
+            }
+        }
+    }
+
     private fun applyPlacement(option: PlacementOption) {
         val sessionId = sessionRepo.getSessionId()
         val deviceToken = sessionRepo.getDeviceToken()
@@ -178,8 +228,6 @@ class RunupViewModel(application: Application) : AndroidViewModel(application) {
                 val patch = JSONObject()
                     .put("personaId", option.personaId)
                     .put("budgetHours", option.budgetHours ?: JSONObject.NULL)
-                    .put("watchedIds", JSONArray())
-                    .put("skippedIds", JSONArray())
                 val next = withContext(Dispatchers.IO) {
                     api.patchState(sessionId, deviceToken, patch)
                 }

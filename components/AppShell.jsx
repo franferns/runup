@@ -6,8 +6,8 @@ import ListView from "./ListView.jsx";
 import ThreadfieldView from "./ThreadfieldView.jsx";
 import Void from "./Void.jsx";
 import { usePrefersReducedMotion } from "../lib/motion.js";
-import { loadState } from "../lib/storage.js";
-import { syncPlacementToRemote, usePairingSync } from "../lib/usePairingSync.js";
+import { hasProgress, loadState } from "../lib/storage.js";
+import { resetProgressAndSync, syncPlacementToRemote, usePairingSync } from "../lib/usePairingSync.js";
 
 export default function AppShell() {
   const pathname = usePathname();
@@ -15,6 +15,7 @@ export default function AppShell() {
   const reduceMotion = usePrefersReducedMotion();
   const [state, setState] = useState(null);
   const [placementMode, setPlacementMode] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     setState(loadState());
@@ -41,6 +42,28 @@ export default function AppShell() {
     setState(nextState);
   }, []);
 
+  const handleResetProgress = useCallback(async () => {
+    if (!state || resetting || !hasProgress(state)) {
+      return;
+    }
+
+    if (
+      !window.confirm(
+        "Reset progress? This clears your watched and skipped titles on web and paired TVs.",
+      )
+    ) {
+      return;
+    }
+
+    setResetting(true);
+    try {
+      const nextState = await resetProgressAndSync(state);
+      setState(nextState);
+    } finally {
+      setResetting(false);
+    }
+  }, [resetting, state]);
+
   const handleOpenList = useCallback(() => {
     router.push("/app/list");
   }, [router]);
@@ -64,6 +87,8 @@ export default function AppShell() {
       <ListView
         state={state}
         onChangePlacement={handleChangePlacement}
+        onResetProgress={handleResetProgress}
+        resetDisabled={resetting || !hasProgress(state)}
         onStateChange={handleStateChange}
         onOpenThreadfield={handleOpenThreadfield}
       />
@@ -78,6 +103,8 @@ export default function AppShell() {
     <ThreadfieldView
       state={state}
       onChangePlacement={handleChangePlacement}
+      onResetProgress={handleResetProgress}
+      resetDisabled={resetting || !hasProgress(state)}
       onStateChange={handleStateChange}
       onOpenList={handleOpenList}
       reduceMotion={reduceMotion}

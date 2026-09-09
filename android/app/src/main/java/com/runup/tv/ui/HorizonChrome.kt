@@ -29,7 +29,7 @@ fun HorizonChrome(
         modifier = modifier
             .fillMaxWidth()
             .background(RunupColors.Void.copy(alpha = 0.92f))
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(horizontal = 20.dp, vertical = 8.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

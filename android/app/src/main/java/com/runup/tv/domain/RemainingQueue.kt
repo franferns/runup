@@ -38,6 +38,7 @@ data class RunupState(
     val budgetHours: Double?,
     val watchedIds: List<String>,
     val skippedIds: List<String>,
+    val progressEpoch: Int = 0,
 )
 
 object RemainingQueue {

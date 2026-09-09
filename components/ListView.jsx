@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import HorizonChrome from "./HorizonChrome.jsx";
 import { buildQueueModel } from "../lib/queueModel.js";
 import { applyFitToPace, markAlreadySeen, markSkipped } from "../lib/storage.js";
@@ -11,6 +12,8 @@ import { usePageTitle } from "./usePageTitle.js";
 export default function ListView({
   state,
   onChangePlacement,
+  onResetProgress,
+  resetDisabled = false,
   onStateChange,
   onOpenThreadfield,
 }) {
@@ -57,8 +60,22 @@ export default function ListView({
               View strand
             </button>
           )}
+          <Link href="/" className="text-button">
+            Home
+          </Link>
+          <Link href="/pair" className="text-button">
+            Pair TV
+          </Link>
           <button type="button" className="text-button" onClick={onChangePlacement}>
             Change placement
+          </button>
+          <button
+            type="button"
+            className="text-button"
+            onClick={onResetProgress}
+            disabled={resetDisabled}
+          >
+            Reset progress
           </button>
         </div>
       </header>
