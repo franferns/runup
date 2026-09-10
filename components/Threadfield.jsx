@@ -7,6 +7,7 @@ import {
   getBeadRadius,
   getCenteredPanOffset,
   getCenteredScrollLeft,
+  getFitScale,
   getThreadfieldLayout,
   SCROLL_MODE_BREAKPOINT,
   segmentPath,
@@ -24,10 +25,12 @@ export default function Threadfield({
   reduceMotion = false,
 }) {
   const drawPathRef = useRef(null);
+  const fieldRef = useRef(null);
   const scrollRef = useRef(null);
   const [dashLength, setDashLength] = useState(0);
   const [dashOffset, setDashOffset] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
   const scrollMode = viewportWidth > 0 && viewportWidth < SCROLL_MODE_BREAKPOINT;
 
@@ -57,13 +60,13 @@ export default function Threadfield({
     [positions, drawFromIndex],
   );
   const focusX = positions[focusIndex]?.x ?? 0;
-  const fitScale = useMemo(() => {
-    if (!viewportWidth || scrollMode) {
-      return 1;
-    }
-
-    return width <= viewportWidth ? 1 : viewportWidth / width;
-  }, [viewportWidth, width, scrollMode]);
+  const fitScale = useMemo(
+    () =>
+      getFitScale(width, height, viewportWidth, viewportHeight, {
+        scrollMode,
+      }),
+    [width, height, viewportWidth, viewportHeight, scrollMode],
+  );
   const scaledWidth = width * fitScale;
   const scaledHeight = height * fitScale;
   const needsScroll = scaledWidth > viewportWidth;
@@ -76,21 +79,26 @@ export default function Threadfield({
   }, [viewportWidth, needsScroll, focusX, width, fitScale]);
 
   useEffect(() => {
-    const element = scrollRef.current;
-    if (!element) {
+    const field = fieldRef.current;
+    const scroll = scrollRef.current;
+    if (!field) {
       return undefined;
     }
 
-    const updateWidth = () => {
-      setViewportWidth(element.clientWidth);
+    const updateViewport = () => {
+      setViewportWidth(scroll?.clientWidth ?? field.clientWidth);
+      setViewportHeight(field.clientHeight);
     };
 
-    updateWidth();
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(element);
+    updateViewport();
+    const observer = new ResizeObserver(updateViewport);
+    observer.observe(field);
+    if (scroll) {
+      observer.observe(scroll);
+    }
 
     return () => observer.disconnect();
-  }, []);
+  }, [strandQueue.length]);
 
   useEffect(() => {
     if (!scrollRef.current || focusIndex < 0 || isDrawing) {
@@ -149,14 +157,14 @@ export default function Threadfield({
 
   if (strandQueue.length === 0) {
     return (
-      <div className="threadfield threadfield-empty" aria-hidden="true">
+      <div ref={fieldRef} className="threadfield threadfield-empty" aria-hidden="true">
         <div className="threadfield-horizon" />
       </div>
     );
   }
 
   return (
-    <div className="threadfield" aria-hidden="true">
+    <div ref={fieldRef} className="threadfield" aria-hidden="true">
       <div className="threadfield-horizon" />
       <div
         ref={scrollRef}
