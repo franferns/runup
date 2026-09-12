@@ -42,9 +42,13 @@ export default function Placement({ currentState, onPlaced }) {
             type="button"
             className={`placement-pin placement-pin-${option.tone}${isSelected ? " is-selected" : ""}`}
             onClick={() => handleSelect(option)}
-            aria-pressed={isSelected || undefined}
+            aria-pressed={isSelected}
+            aria-current={isSelected ? "true" : undefined}
           >
             <span className="placement-pin-glow" aria-hidden="true" />
+            {isSelected ? (
+              <span className="placement-pin-current">Current</span>
+            ) : null}
             <span className="placement-pin-mark" aria-hidden="true" />
             <span className="placement-pin-label">{option.label}</span>
             <span className="placement-pin-hint">{option.hint}</span>

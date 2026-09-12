@@ -212,10 +212,13 @@ body {
 
 .void-hero h1 {
   margin: 14px 0 0;
-  font-size: clamp(32px, 6vw, 58px);
+  max-width: 100%;
+  font-size: clamp(1.75rem, 1.15rem + 2.2vw, 3.25rem);
   font-weight: 500;
-  letter-spacing: 0.28em;
+  letter-spacing: clamp(0.1em, 0.08em + 0.6vw, 0.2em);
+  line-height: 1.12;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .void-lead {
@@ -253,9 +256,11 @@ body {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(28px, 5vw, 56px);
+  max-width: 100%;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 3.25rem);
   font-weight: 500;
-  letter-spacing: 0.38em;
+  letter-spacing: clamp(0.12em, 0.08em + 0.8vw, 0.28em);
+  text-wrap: balance;
 }
 
 .hero p {
@@ -314,9 +319,52 @@ body {
   outline: none;
 }
 
+.placement:has(.placement-pin.is-selected) .placement-pin:not(.is-selected) {
+  opacity: 0.72;
+}
+
 .placement-pin.is-selected {
-  border-color: rgba(244, 241, 234, 0.45);
-  box-shadow: 0 0 0 1px rgba(244, 241, 234, 0.12);
+  border-color: rgba(244, 241, 234, 0.72);
+  box-shadow:
+    0 0 0 1px rgba(244, 241, 234, 0.28),
+    0 12px 36px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(
+    165deg,
+    rgba(36, 38, 48, 0.92) 0%,
+    rgba(12, 13, 18, 0.9) 100%
+  );
+}
+
+.placement-pin-amber.is-selected {
+  border-color: rgba(232, 165, 75, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(232, 165, 75, 0.4),
+    0 0 28px rgba(232, 165, 75, 0.22);
+}
+
+.placement-pin-violet.is-selected {
+  border-color: rgba(155, 125, 255, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(155, 125, 255, 0.4),
+    0 0 28px rgba(155, 125, 255, 0.22);
+}
+
+.placement-pin-rust.is-selected {
+  border-color: rgba(196, 92, 62, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(196, 92, 62, 0.4),
+    0 0 28px rgba(196, 92, 62, 0.22);
+}
+
+.placement-pin-teal.is-selected {
+  border-color: rgba(62, 196, 193, 0.78);
+  box-shadow:
+    0 0 0 1px rgba(62, 196, 193, 0.4),
+    0 0 28px rgba(62, 196, 193, 0.22);
+}
+
+.placement-pin.is-selected .placement-pin-glow {
+  opacity: 1;
 }
 
 .placement-pin-glow {
@@ -375,6 +423,23 @@ body {
 
 .placement-pin-teal .placement-pin-glow {
   background: radial-gradient(circle, var(--teal), transparent 68%);
+}
+
+.placement-pin-current {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  margin: 0;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: #0b0c10;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .placement-pin-label {
@@ -504,6 +569,11 @@ body {
   gap: 16px;
   min-width: 0;
   flex-shrink: 0;
+}
+
+.list-header > :first-child {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .header-actions {
@@ -758,10 +828,13 @@ body {
 
 .tonight-title {
   margin: 0;
-  font-size: clamp(32px, 6vw, 56px);
+  max-width: 100%;
+  font-size: clamp(2rem, 1.55rem + 1.2vw, 2.75rem);
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.12;
   letter-spacing: 0.04em;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 .tonight-meta {
@@ -1509,21 +1582,7 @@ body {
   }
 }
 
-@media (max-width: 760px) {
-  .shell {
-    padding: 20px 16px 40px;
-  }
-
-  .void-hero h1 {
-    letter-spacing: 0.18em;
-  }
-
-  .void-horizon-chip {
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
+@media (max-width: 960px) {
   .list-header {
     flex-direction: column;
     align-items: stretch;
@@ -1537,6 +1596,18 @@ body {
 
   .threadfield-shell .disclaimer {
     display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    padding: 20px 16px 40px;
+  }
+
+  .void-horizon-chip {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
   }
 
   .placement {
@@ -1613,8 +1684,11 @@ body {
 .official15-main h1,
 .pair-main h1 {
   margin: 0 0 16px;
-  font-size: clamp(28px, 5vw, 40px);
+  max-width: 100%;
+  font-size: clamp(1.75rem, 1.35rem + 1.4vw, 2.5rem);
   line-height: 1.15;
+  overflow-wrap: break-word;
+  text-wrap: balance;
 }
 
 .landing-hero p,
@@ -1761,8 +1835,8 @@ body {
 }
 
 .pair-code {
-  font-size: 32px;
-  letter-spacing: 0.2em;
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem);
+  letter-spacing: 0.16em;
   font-weight: 600;
   color: var(--amber);
   margin: 24px 0;
